@@ -1,2 +1,0 @@
-# DivineConnect
-Fullstack project
