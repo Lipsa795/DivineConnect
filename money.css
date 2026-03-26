@@ -1,0 +1,36 @@
+import React, { useState } from "react";
+
+function Donate() {
+  const [amount, setAmount] = useState("");
+
+  const handlePayment = () => {
+    if (!amount) {
+      alert("Enter amount");
+      return;
+    }
+
+    // Dummy payment (Replace with Razorpay later)
+    alert(`Payment of ₹${amount} initiated`);
+  };
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h2>Donate to Temple</h2>
+
+      <input
+        type="number"
+        placeholder="Enter amount"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
+
+      <br /><br />
+
+      <button onClick={handlePayment}>
+        Donate Now
+      </button>
+    </div>
+  );
+}
+
+export default Donate;
