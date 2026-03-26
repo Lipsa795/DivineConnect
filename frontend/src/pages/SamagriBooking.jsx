@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
+import API_BASE_URL from '../config';  // ✅ ADD THIS LINE
 
 function SamagriBooking() {
   const { user } = useAuth();
@@ -74,7 +75,8 @@ function SamagriBooking() {
 
       const totalAmount = calculateTotal();
       
-      const res = await axios.post('/api/samagri/create-order', {
+      // ✅ FIXED: Added API_BASE_URL
+      const res = await axios.post(`${API_BASE_URL}/api/samagri/create-order`, {
         items: orderItems,
         totalAmount,
         address,
@@ -100,7 +102,8 @@ function SamagriBooking() {
         order_id: orderId,
         handler: async (response) => {
           try {
-            await axios.post('/api/samagri/verify-payment', {
+            // ✅ FIXED: Added API_BASE_URL
+            await axios.post(`${API_BASE_URL}/api/samagri/verify-payment`, {
               orderId: response.razorpay_order_id,
               paymentId: response.razorpay_payment_id,
               signature: response.razorpay_signature,

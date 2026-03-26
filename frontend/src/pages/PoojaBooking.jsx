@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
+import API_BASE_URL from '../config';  // ✅ ADD THIS LINE
 
 function PoojaBooking() {
   const { user } = useAuth();
@@ -50,8 +51,8 @@ function PoojaBooking() {
         return;
       }
 
-      // Create order on backend
-      const response = await axios.post('/api/bookings/create-order', {
+      // ✅ FIXED: Added API_BASE_URL
+      const response = await axios.post(`${API_BASE_URL}/api/bookings/create-order`, {
         ...formData,
         amount: formData.amount
       });
@@ -68,8 +69,8 @@ function PoojaBooking() {
         order_id: orderId,
         handler: async (response) => {
           try {
-            // Verify payment
-            await axios.post('/api/bookings/verify-payment', {
+            // ✅ FIXED: Added API_BASE_URL
+            await axios.post(`${API_BASE_URL}/api/bookings/verify-payment`, {
               orderId: response.razorpay_order_id,
               paymentId: response.razorpay_payment_id,
               signature: response.razorpay_signature,

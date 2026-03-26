@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../config';  // ✅ ADD THIS LINE
 
 function TempleFinder() {
   const [temples, setTemples] = useState([]);
@@ -41,7 +42,8 @@ function TempleFinder() {
 
   const getLocationName = async (lat, lng) => {
     try {
-      const response = await axios.get('/api/places/geocode', {
+      // ✅ FIXED: Added API_BASE_URL
+      const response = await axios.get(`${API_BASE_URL}/api/places/geocode`, {
         params: { lat, lng }
       });
       
@@ -60,7 +62,8 @@ function TempleFinder() {
     setError('');
     
     try {
-      const response = await axios.get('/api/places/nearby', {
+      // ✅ FIXED: Added API_BASE_URL
+      const response = await axios.get(`${API_BASE_URL}/api/places/nearby`, {
         params: {
           lat,
           lng,
@@ -84,7 +87,8 @@ function TempleFinder() {
             // Get additional details
             if (place.place_id) {
               try {
-                const detailsResponse = await axios.get('/api/places/details', {
+                // ✅ FIXED: Added API_BASE_URL
+                const detailsResponse = await axios.get(`${API_BASE_URL}/api/places/details`, {
                   params: { place_id: place.place_id }
                 });
                 details = detailsResponse.data.result;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
+import API_BASE_URL from '../config';  // ✅ ADD THIS LINE
 
 function CharityFunding() {
   const { user } = useAuth();
@@ -48,7 +49,8 @@ function CharityFunding() {
         return;
       }
 
-      const response = await axios.post('/api/charity/donate', formData);
+      // ✅ FIXED: Added API_BASE_URL
+      const response = await axios.post(`${API_BASE_URL}/api/charity/donate`, formData);
       const { orderId, amount, charityId } = response.data;
       
       const options = {
@@ -60,7 +62,8 @@ function CharityFunding() {
         order_id: orderId,
         handler: async (response) => {
           try {
-            await axios.post('/api/charity/verify-donation', {
+            // ✅ FIXED: Added API_BASE_URL
+            await axios.post(`${API_BASE_URL}/api/charity/verify-donation`, {
               orderId: response.razorpay_order_id,
               paymentId: response.razorpay_payment_id,
               signature: response.razorpay_signature,
