@@ -5,6 +5,7 @@ import Services from '../components/Services';
 import TempleFinder from '../components/TempleFinder';
 import HowItWorks from '../components/HowItWorks';
 import Testimonials from '../components/Testimonials';
+import Footer from "../components/Footer";
 
 function Home() {
   return (
@@ -15,11 +16,8 @@ function Home() {
       <TempleFinder />
       <HowItWorks />
       <Testimonials />
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2026 DivineConnect. All Rights Reserved.</p>
-        </div>
-      </footer>
+
+      <Footer />   {}
     </div>
   );
 }
