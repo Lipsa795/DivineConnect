@@ -8,43 +8,39 @@ function Services() {
   const services = [
     {
       icon: "🙏",
-      title: "Free Pooja & Samagri Booking",
-      description: "Book your pooja materials and get doorstep delivery",
+      title: "Pooja & Samagri Services",
+      description: "Book pooja with free samagri delivery",
       link: "/samagri",
-      color: "from-red-500 to-orange-500"
+      color: "from-red-500 to-orange-500",
+      features: ["Free Samagri", "Doorstep Delivery", "Expert Priests"]
     },
     {
-      icon: "📱",
-      title: "Online Darshan",
-      description: "Experience divine presence from anywhere",
-      link: "#",
-      color: "from-blue-500 to-purple-500"
+      icon: "🍛",
+      title: "Prasadam",
+      description: "Receive blessed prasadam delivered to your home",
+      link: "/prasadam",
+      color: "from-green-500 to-teal-500",
+      features: ["Temple Blessed", "Pan India Delivery", "Multiple Varieties"]
     },
     {
-      icon: "⭐",
-      title: "Astrology Consultation",
-      description: "Expert astrologers for life guidance",
-      link: "#",
-      color: "from-green-500 to-teal-500"
-    },
-    {
-      icon: "🎉",
-      title: "Vrat & Festival Services",
-      description: "Special arrangements for festivals",
-      link: "#",
-      color: "from-pink-500 to-rose-500"
+      icon: "❤️",
+      title: "Charity & Donations",
+      description: "Support temples and spiritual causes",
+      link: "/charity",
+      color: "from-pink-500 to-rose-500",
+      features: ["Tax Benefits", "Transparent", "Multiple Causes"]
     }
   ];
 
   return (
-    <section id="services" className="py-16 bg-gray-50">
+    <section id="Services" className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-amber-900 mb-4">Our Services</h2>
           <p className="text-gray-600 text-lg">Spiritual services to connect you with the divine</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {services.map((service, index) => (
             <Link 
               key={index}
@@ -55,12 +51,15 @@ function Services() {
                 {service.icon}
               </div>
               <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-              <p className="text-white/90 text-sm">{service.description}</p>
-              {service.link !== "#" && (
-                <div className="mt-4 text-sm font-semibold">
-                  Book Now →
-                </div>
-              )}
+              <p className="text-white/90 text-sm mb-3">{service.description}</p>
+              <div className="text-xs text-white/80 space-y-1">
+                {service.features.map((feature, i) => (
+                  <div key={i}>✓ {feature}</div>
+                ))}
+              </div>
+              <div className="mt-4 text-sm font-semibold">
+                Learn More →
+              </div>
             </Link>
           ))}
         </div>
