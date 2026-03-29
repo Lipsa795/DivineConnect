@@ -5,7 +5,7 @@ import Services from '../components/Services';
 import TempleFinder from '../components/TempleFinder';
 import HowItWorks from '../components/HowItWorks';
 import Testimonials from '../components/Testimonials';
-import Footer from "../components/Footer";
+import Footer from '../components/Footer';
 
 function Home() {
   return (
@@ -16,8 +16,7 @@ function Home() {
       <TempleFinder />
       <HowItWorks />
       <Testimonials />
-
-      <Footer />   {}
+      <Footer />
     </div>
   );
 }

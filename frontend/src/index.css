@@ -18,3 +18,17 @@ body {
   background: linear-gradient(135deg, #fff9f0 0%, #fff5e6 100%);
   color: #4a3728;
 }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1s ease-out;
+}
