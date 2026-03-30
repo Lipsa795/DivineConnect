@@ -92,7 +92,8 @@ npm start
 
 * Frontend: http://localhost:3000
 * Backend: http://localhost:5000
-* Deployed Link : https://divineconnect-1.onrender.com/
+* Deployed Project Link : https://divineconnect-1.onrender.com/
+* Deployed Backend Link : https://divineconnect-dys5.onrender.com
 
 ---
 
