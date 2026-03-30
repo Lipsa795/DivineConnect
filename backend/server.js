@@ -21,6 +21,8 @@ app.use('/api/samagri', require('./routes/samagri'));
 app.use('/api/temples', require('./routes/temples'));
 app.use('/api/places', require('./routes/places'));
 // Add this with other routes
+app.use('/api/prasadam', require('./routes/prasadam'));
+// Add this with other routes
 app.use('/api/chatbot', require('./routes/chatbot')); // Add this line
 // Add this route after your middleware
 app.get('/', (req, res) => {

@@ -1,203 +1,195 @@
 const express = require('express');
 const { GoogleGenAI } = require('@google/genai');
+
 const router = express.Router();
 
-// Test endpoint
+// ================== INIT ==================
+const ai = new GoogleGenAI({}); // uses GEMINI_API_KEY from env
+
+// ================== TEST ROUTES ==================
 router.get('/test', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     message: 'Chatbot route is working!',
     timestamp: new Date().toISOString()
   });
 });
 
-// Health check endpoint
 router.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Chatbot API is running' });
 });
 
-// Initialize Google GenAI
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyBX4SOlQ4tFafmqPDexaab5B4yvhof8cjQ';
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-
-// Intent detection using keywords (reliable and fast)
+// ================== INTENT DETECTION ==================
 function detectIntent(message) {
-  const msg = message.toLowerCase().trim();
-  
-  // Booking pooja intents
-  const bookKeywords = ['book', 'booking', 'want pooja', 'need pooja', 'do pooja', 'perform pooja', 'pooja booking'];
-  if (bookKeywords.some(keyword => msg.includes(keyword)) || 
-      (msg.includes('pooja') && (msg.includes('want') || msg.includes('need') || msg.includes('book')))) {
+  const msg = message.toLowerCase();
+
+  // BOOK POOJA
+  if (
+    msg.includes('book') ||
+    msg.includes('pooja') && (msg.includes('want') || msg.includes('need'))
+  ) {
     return { intent: 'book_pooja', action: { type: 'navigate', to: '/pooja-booking' } };
   }
-  
-  // Specific pooja types
-  const poojaTypes = ['griha shanti', 'satyanarayan', 'rudrabhishek', 'mrityunjaya', 'maha mrityunjaya'];
-  if (poojaTypes.some(type => msg.includes(type))) {
-    return { intent: 'book_pooja', action: { type: 'navigate', to: '/pooja-booking' } };
-  }
-  
-  // Donation intents
-  const donateKeywords = ['donate', 'donation', 'charity', 'give', 'contribute', 'help temple', 'support temple'];
-  if (donateKeywords.some(keyword => msg.includes(keyword))) {
+
+  // DONATE
+  if (msg.includes('donate') || msg.includes('charity')) {
     return { intent: 'donate', action: { type: 'navigate', to: '/charity' } };
   }
-  
-  // Samagri intents
-  const samagriKeywords = ['samagri', 'order', 'items', 'materials', 'kumkum', 'chandan', 'agarbatti', 'camphor', 'flowers', 'coconut', 'pooja items', 'buy items'];
-  if (samagriKeywords.some(keyword => msg.includes(keyword))) {
+
+  // SAMAGRI
+  if (msg.includes('samagri') || msg.includes('pooja items')) {
     return { intent: 'order_samagri', action: { type: 'navigate', to: '/samagri' } };
   }
-  
-  // Temple finder intents
-  const templeKeywords = ['nearby temple', 'temples near', 'find temple', 'search temple', 'temple location', 'temple around', 'near me'];
-  if (templeKeywords.some(keyword => msg.includes(keyword)) || 
-      (msg.includes('temple') && (msg.includes('near') || msg.includes('find') || msg.includes('location')))) {
+
+  // TEMPLE
+  if (msg.includes('temple') && (msg.includes('near') || msg.includes('find'))) {
     return { intent: 'find_temple', action: { type: 'scroll', to: 'temples' } };
   }
-  
-  // Festival intents (will use AI but mark as festival for context)
-  const festivalKeywords = ['festival', 'shivaratri', 'diwali', 'ganesh', 'navratri', 'janmashtami', 'holi', 'rath yatra', 'puja'];
-  if (festivalKeywords.some(keyword => msg.includes(keyword))) {
+
+  // FESTIVAL
+  if (
+    msg.includes('holi') ||
+    msg.includes('diwali') ||
+    msg.includes('shivratri') ||
+    msg.includes('navratri') ||
+    msg.includes('janmashtami')
+  ) {
     return { intent: 'festival_info', action: null };
   }
-  
-  // Sacred places intents
-  const sacredPlaces = ['puri', 'jagannath', 'varanasi', 'kashi', 'tirupati', 'venkateswara', 'ayodhya', 'mathura', 'dwarka', 'badrinath', 'kedarnath'];
-  if (sacredPlaces.some(place => msg.includes(place))) {
+
+  // PLACE
+  if (msg.includes('puri') || msg.includes('varanasi') || msg.includes('tirupati')) {
     return { intent: 'sacred_place', action: null };
   }
-  
-  // Default - general question (will use AI)
+
   return { intent: 'general_question', action: null };
 }
 
-// Predefined replies for common intents (used when AI fails)
-function getPredefinedReply(intent, message) {
-  const msg = message.toLowerCase();
-  
-  switch(intent) {
+// ================== PREDEFINED ==================
+function getPredefinedReply(intent) {
+  switch (intent) {
     case 'book_pooja':
-      return "I'll help you book a pooja! 🙏 We offer:\n\n• Griha Shanti Pooja (₹1100) - Peace and harmony in home\n• Satyanarayan Pooja (₹2100) - Prosperity and abundance\n• Rudrabhishek Pooja (₹3100) - Lord Shiva blessings\n• Maha Mrityunjaya Pooja (₹5100) - Health and longevity\n\nClick the button below to proceed to booking!";
-    
+      return `I'll help you book a pooja! 🙏
+
+• Griha Shanti  
+• Satyanarayan  
+• Rudrabhishek  
+• Maha Mrityunjaya  
+
+Click below to proceed!`;
+
     case 'donate':
-      return "Thank you for your generosity! 🙏 You can donate to:\n\n• 🏛️ Temple Maintenance - Support daily rituals\n• 🍛 Food Donation (Anna Daan) - Feed devotees\n• 📚 Vedic Education - Support spiritual learning\n• 💊 Medical Aid - Help those in need\n\nClick the button below to make a difference!";
-    
+      return `Thank you 🙏
+
+• Temple Maintenance  
+• Anna Daan  
+• Education  
+
+Click below to donate!`;
+
     case 'order_samagri':
-      return "You can order these pooja essentials with doorstep delivery:\n\n🌸 Kumkum, Chandan, Agarbatti, Camphor\n🌸 Fresh Flowers, Coconut, Betel Leaves\n🌸 Incense Sticks, Haldi, Sindoor\n\nClick the button below to place your order! 🛍️";
-    
+      return `Order pooja items 🛍️
+
+• Kumkum  
+• Flowers  
+• Agarbatti  
+
+Click below!`;
+
     case 'find_temple':
-      return "I can help you find temples near your location! 🛕\n\nClick the button below and then:\n1. Click 'Use My Current Location'\n2. Allow location access\n3. Adjust search radius\n4. Discover temples near you!\n\nMay you find divine blessings! 🙏";
-    
+      return `Find temples near you 🛕
+
+Click below and allow location 🙏`;
+
     default:
       return null;
   }
 }
 
-// Chatbot message endpoint
+// ================== MAIN ==================
 router.post('/message', async (req, res) => {
   try {
-    const { message, userId, history = [] } = req.body;
-    
-    console.log('📨 Received message:', message);
-    
-    if (!message || message.trim() === '') {
-      return res.json({ 
-        reply: "Please ask me something! 🙏",
+    const { message, history = [] } = req.body;
+
+    if (!message || !message.trim()) {
+      return res.json({
+        reply: "Please ask something 🙏",
         intent: 'general_question',
         action: null
       });
     }
-    
-    // First, detect intent using keywords
+
     const { intent, action } = detectIntent(message);
-    console.log('🎯 Detected intent:', intent);
-    console.log('🎬 Action:', action);
-    
-    // For action intents, use predefined reply (reliable and fast)
-    const predefinedReply = getPredefinedReply(intent, message);
-    
-    if (predefinedReply) {
-      // For intent that has action (navigation), return predefined reply with action
+
+    // PREDEFINED
+    const predefined = getPredefinedReply(intent);
+    if (predefined) {
       return res.json({
-        reply: predefinedReply,
-        intent: intent,
-        action: action,
+        reply: predefined,
+        intent,
+        action,
         success: true
       });
     }
-    
-    // For general questions and festival info, use Gemini AI
-    console.log('🤖 Calling Gemini AI for general question...');
-    
-    // Build prompt for Gemini
-    let prompt = `You are a spiritual assistant for DivineConnect. Answer the following question in a warm, helpful, and spiritual manner. Keep responses concise (2-3 sentences max). Use Indian spiritual terminology like "Namaste", "prasadam", "darshan", etc.
 
-User question: "${message}"
+    // CONTEXT
+    const conversation = history
+      .map(h => `${h.role}: ${h.text}`)
+      .join('\n');
 
-Answer:`;
-    
-    // Add context for festival questions
+    let prompt = `
+You are a spiritual assistant for DivineConnect.
+Reply in a short, warm way (2-3 lines).
+
+${conversation}
+
+User: ${message}
+Assistant:
+`;
+
     if (intent === 'festival_info') {
-      prompt = `You are a spiritual assistant. Provide information about the Hindu festival mentioned. Include significance, when it's celebrated, and how it's observed. Keep it concise (2-3 sentences).
+      prompt = `
+Explain this Hindu festival briefly (meaning + how celebrated).
 
-Question: "${message}"
-
-Answer:`;
+User: ${message}
+Assistant:
+`;
     }
-    
+
     if (intent === 'sacred_place') {
-      prompt = `You are a spiritual assistant. Provide information about the sacred place mentioned. Include its significance, main temple/deity, and why it's important. Keep it concise (2-3 sentences).
+      prompt = `
+Explain this sacred place briefly (importance + deity).
 
-Question: "${message}"
-
-Answer:`;
+User: ${message}
+Assistant:
+`;
     }
-    
-    // Call Gemini API
+
+    // ================== GEMINI ==================
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash-exp',
+      model: "gemini-3-flash-preview",
       contents: prompt,
-      config: {
-        temperature: 0.7,
-        maxOutputTokens: 200
-      }
     });
-    
-    const aiReply = response.text || "I'm here to help! Could you please rephrase your question? 🙏";
-    console.log('🤖 AI Reply:', aiReply.substring(0, 100));
-    
+
+    console.log("Gemini response:", response);
+
+    const aiReply = response.text || "Please rephrase 🙏";
+
     res.json({
       reply: aiReply,
-      intent: intent,
-      action: null,
-      success: true,
-      ai: true
+      intent,
+      action,
+      success: true
     });
-    
-  } catch (error) {
-    console.error('❌ Error:', error.message);
-    
-    // Fallback: try to detect intent and use predefined reply
-    const { intent, action } = detectIntent(req.body.message);
-    const fallbackReply = getPredefinedReply(intent, req.body.message);
-    
-    if (fallbackReply) {
-      res.json({
-        reply: fallbackReply,
-        intent: intent,
-        action: action,
-        success: true,
-        fallback: true
-      });
-    } else {
-      res.json({
-        reply: "Namaste! 🙏 I'm your DivineConnect spiritual assistant. I can help you:\n\n• 📖 Book a pooja\n• ❤️ Make a donation\n• 🌸 Order samagri\n• 🛕 Find nearby temples\n• 🎉 Learn about festivals\n• 📍 Discover sacred places\n\nWhat would you like to do today?",
-        intent: 'general_question',
-        action: null,
-        success: true
-      });
-    }
+
+  } catch (err) {
+    console.error("Chatbot error:", err.message);
+
+    res.json({
+      reply: "Namaste 🙏 I can help with pooja, temples, donations, and festivals.",
+      intent: 'general_question',
+      action: null
+    });
   }
 });
 
