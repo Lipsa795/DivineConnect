@@ -261,31 +261,3 @@ function PoojaBooking() {
 }
 
 export default PoojaBooking;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
