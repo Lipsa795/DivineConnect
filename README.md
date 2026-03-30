@@ -91,6 +91,7 @@ npm start
 ### 🌐 4. Access the Application
 
 * Frontend: http://localhost:3000
+* Backend: http://localhost:5000
 * Deployed Link : https://divineconnect-1.onrender.com/
 
 ---
