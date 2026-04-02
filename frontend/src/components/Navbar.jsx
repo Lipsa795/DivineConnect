@@ -18,9 +18,8 @@ function Navbar() {
     const element = document.getElementById(targetId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
-      setIsMenuOpen(false); // Close mobile menu after click
+      setIsMenuOpen(false);
     } else {
-      // If element not found, navigate to home and then scroll
       navigate("/");
       setTimeout(() => {
         const el = document.getElementById(targetId);
@@ -29,19 +28,40 @@ function Navbar() {
     }
   };
 
+  // NavLink component with underline hover effect
+  const NavLink = ({ to, children, onClick, isAnchor = false }) => {
+    const classes = "relative group py-1 hover:text-amber-200 transition duration-300";
+    
+    if (isAnchor) {
+      return (
+        <a href={to} onClick={onClick} className={classes}>
+          {children}
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
+        </a>
+      );
+    }
+    
+    return (
+      <Link to={to} onClick={onClick} className={classes}>
+        {children}
+        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
+      </Link>
+    );
+  };
+
   return (
     <nav className="bg-gradient-to-r from-amber-800 to-amber-600 text-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold flex items-center gap-2">
+          <Link to="/" className="text-2xl font-bold flex items-center gap-2 hover:scale-105 transition-transform duration-300">
             <span className="text-3xl">🕉️</span>
             DivineConnect
           </Link>
 
           {/* Mobile button */}
           <button
-            className="lg:hidden text-2xl"
+            className="lg:hidden text-2xl hover:text-amber-200 transition"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             ☰
@@ -49,59 +69,43 @@ function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex space-x-6 items-center">
-            <Link to="/" className="hover:text-amber-200 transition">
-              Home
-            </Link>
+            <NavLink to="/">Home</NavLink>
 
-            {/* Section scrolling links - using onClick handlers */}
-            <a
-              href="#Services"
-              onClick={(e) => handleScroll(e, "Services")}
-              className="hover:text-amber-200 transition"
-            >
+            <NavLink to="#Services" isAnchor onClick={(e) => handleScroll(e, "Services")}>
               Services
-            </a>
-            <a
-              href="#TempleFinder"
-              onClick={(e) => handleScroll(e, "TempleFinder")}
-              className="hover:text-amber-200 transition"
-            >
+            </NavLink>
+            
+            <NavLink to="#TempleFinder" isAnchor onClick={(e) => handleScroll(e, "TempleFinder")}>
               Temples
-            </a>
-            <Link to="/About" className="hover:text-amber-200 transition">
-              About Us
-            </Link>
+            </NavLink>
+            
+            <NavLink to="/live-streaming">Live Darshan</NavLink>
+            
+            <NavLink to="/About">About Us</NavLink>
 
-            <Link to="/prasadam" className="hover:text-amber-200 transition">
-              Prasadam
-            </Link>
+            <NavLink to="/prasadam">Prasadam</NavLink>
 
             {user ? (
               <>
-                <Link
-                  to="/pooja-booking"
-                  className="hover:text-amber-200 transition"
-                >
-                  Pooja Booking
-                </Link>
-                <Link to="/charity" className="hover:text-amber-200 transition">
-                  Charity
-                </Link>
-                <Link to="/samagri" className="hover:text-amber-200 transition">
-                  Samagri
-                </Link>
+                <NavLink to="/pooja-booking">Pooja Booking</NavLink>
+                <NavLink to="/charity">Charity</NavLink>
+                <NavLink to="/samagri">Samagri</NavLink>
 
                 <div className="relative group">
-                  <button className="flex items-center gap-2 hover:text-amber-200 transition">
+                  <button className="flex items-center gap-2 hover:text-amber-200 transition duration-300 py-1">
                     <i className="fas fa-user-circle"></i>
                     {user.name}
-                    <i className="fas fa-chevron-down text-xs"></i>
+                    <i className="fas fa-chevron-down text-xs transition-transform duration-300 group-hover:rotate-180"></i>
                   </button>
 
-                  <div className="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg hidden group-hover:block">
+                  <div className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    <div className="p-2 border-b border-gray-100">
+                      <p className="text-xs text-gray-500">Signed in as</p>
+                      <p className="text-sm font-semibold text-amber-800 truncate">{user.email}</p>
+                    </div>
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 transition"
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 transition text-red-600"
                     >
                       <i className="fas fa-sign-out-alt mr-2"></i>Logout
                     </button>
@@ -110,14 +114,12 @@ function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className="hover:text-amber-200 transition">
-                  Login
-                </Link>
+                <NavLink to="/login">Login</NavLink>
                 <Link
                   to="/signup"
-                  className="bg-amber-700 px-4 py-2 rounded-lg hover:bg-amber-800 transition"
+                  className="bg-white text-amber-700 px-5 py-2 rounded-full font-semibold hover:bg-amber-50 hover:scale-105 transition-all duration-300 shadow-md"
                 >
-                  Sign Up
+                  Sign Up Free
                 </Link>
               </>
             )}
@@ -125,101 +127,76 @@ function Navbar() {
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="lg:hidden mt-4 space-y-3 pb-3">
-            <Link
-              to="/"
-              className="block hover:text-amber-200 transition"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Home
-            </Link>
+        <div className={`lg:hidden transition-all duration-300 overflow-hidden ${isMenuOpen ? "max-h-96 mt-4" : "max-h-0"}`}>
+          {isMenuOpen && (
+            <div className="space-y-3 pb-3">
+              <Link to="/" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </Link>
+              <a
+                href="#Services"
+                onClick={(e) => handleScroll(e, "Services")}
+                className="block hover:text-amber-200 transition py-1"
+              >
+                Services
+              </a>
+              <a
+                href="#TempleFinder"
+                onClick={(e) => handleScroll(e, "TempleFinder")}
+                className="block hover:text-amber-200 transition py-1"
+              >
+                Temples
+              </a>
+              <Link to="/live-streaming" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                Live Darshan
+              </Link>
+              <Link to="/About" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                About Us
+              </Link>
+              <Link to="/prasadam" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                Prasadam
+              </Link>
 
-            <a
-              href="#Services"
-              onClick={(e) => handleScroll(e, "Services")}
-              className="block hover:text-amber-200 transition"
-            >
-              Services
-            </a>
-            <a
-              href="#TempleFinder"
-              onClick={(e) => handleScroll(e, "TempleFinder")}
-              className="block hover:text-amber-200 transition"
-            >
-              Temples
-            </a>
-            <Link to="/About" className="hover:text-amber-200 transition">
-              About Us
-            </Link>
-
-            <Link
-              to="/prasadam"
-              className="block hover:text-amber-200 transition"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Prasadam
-            </Link>
-
-            {user ? (
-              <>
-                <Link
-                  to="/pooja-booking"
-                  className="block hover:text-amber-200 transition"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Pooja Booking
-                </Link>
-                <Link
-                  to="/charity"
-                  className="block hover:text-amber-200 transition"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Charity
-                </Link>
-                <Link
-                  to="/samagri"
-                  className="block hover:text-amber-200 transition"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Samagri
-                </Link>
-
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left hover:text-amber-200 transition"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="block hover:text-amber-200 transition"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  className="block bg-amber-700 px-4 py-2 rounded-lg text-center hover:bg-amber-800 transition"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-        )}
+              {user ? (
+                <>
+                  <Link to="/pooja-booking" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                    Pooja Booking
+                  </Link>
+                  <Link to="/charity" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                    Charity
+                  </Link>
+                  <Link to="/samagri" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                    Samagri
+                  </Link>
+                  <hr className="border-amber-500/30 my-2" />
+                  <div className="text-sm text-amber-200 py-1">{user.name}</div>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left hover:text-amber-200 transition py-1"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="block bg-white text-amber-700 px-4 py-2 rounded-lg text-center hover:bg-amber-50 transition mt-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Sign Up Free
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
 }
 
 export default Navbar;
-
-
-
-
-

@@ -25,6 +25,7 @@ app.use('/api/prasadam', require('./routes/prasadam'));
 // Add this with other routes
 app.use('/api/chatbot', require('./routes/chatbot')); // Add this line
 // Add this route after your middleware
+app.use('/api/youtube', require('./routes/youtube'));
 app.get('/', (req, res) => {
   res.json({
     message: '🕉️ DivineConnect API is running!',

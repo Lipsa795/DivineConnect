@@ -18,6 +18,7 @@ body {
   background: linear-gradient(135deg, #fff9f0 0%, #fff5e6 100%);
   color: #4a3728;
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
