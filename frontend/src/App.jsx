@@ -17,6 +17,8 @@ import LiveStreaming from "./pages/LiveStreaming";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import PilgrimageTravel from "./pages/PilgrimageTravel";
+import ContactUs from "./pages/ContactUs";
+import Careers from "./pages/Careers";
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuth();
@@ -36,15 +38,18 @@ function App() {
         {isLoading && <LoadingAnimation onComplete={handleLoadingComplete} />}
         <div className={isLoading ? "hidden" : "block"}>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/temple/:id" element={<TempleDetails />} />
-            <Route path="/travel" element={<PilgrimageTravel />} />
-            <Route path="/travel" element={<ProtectedRoute><PilgrimageTravel /></ProtectedRoute>} />
-
-
+            <Route path="/live-streaming" element={<LiveStreaming />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/careers" element={<Careers />} />
+            
+            {/* Protected Routes (require login) */}
             <Route
               path="/pooja-booking"
               element={
@@ -77,8 +82,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/live-streaming" element={<LiveStreaming />} />
-            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route
+              path="/travel"
+              element={
+                <ProtectedRoute>
+                  <PilgrimageTravel />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/profile"
               element={

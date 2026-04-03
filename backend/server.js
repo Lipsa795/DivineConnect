@@ -29,6 +29,7 @@ app.use('/api/chatbot', require('./routes/chatbot'));
 app.use('/api/ola-maps', require('./routes/ola-maps')); // Add this line
 // Add this route after your middleware
 app.use('/api/youtube', require('./routes/youtube'));
+app.use('/api/notifications', require('./routes/notifications'));
 app.get('/', (req, res) => {
   res.json({
     message: '🕉️ DivineConnect API is running!',

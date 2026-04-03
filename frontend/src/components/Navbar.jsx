@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import API_BASE_URL from "../config";
@@ -9,6 +9,8 @@ function Navbar() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownTimeoutRef = useRef(null);
 
   // Fetch profile picture
   useEffect(() => {
@@ -51,26 +53,30 @@ function Navbar() {
     }
   };
 
-  // NavLink component with underline hover effect
-  const NavLink = ({ to, children, onClick, isAnchor = false }) => {
-    const classes = "relative group py-1 hover:text-amber-200 transition duration-300";
-    
-    if (isAnchor) {
-      return (
-        <a href={to} onClick={onClick} className={classes}>
-          {children}
-          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
-        </a>
-      );
+  // Dropdown handlers with delay
+  const handleMouseEnter = (dropdownName) => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
     }
-    
-    return (
-      <Link to={to} onClick={onClick} className={classes}>
-        {children}
-        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
-      </Link>
-    );
+    setOpenDropdown(dropdownName);
   };
+
+  const handleMouseLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 200);
+  };
+
+  // Services Dropdown Items
+  const servicesItems = [
+    { name: "Pooja Booking", link: "/pooja-booking", icon: "praying-hands" },
+    { name: "Charity", link: "/charity", icon: "hand-holding-heart" },
+    { name: "Samagri", link: "/samagri", icon: "shopping-bag" },
+    { name: "Prasadam", link: "/prasadam", icon: "gift" },
+    { name: "Live Darshan", link: "/live-streaming", icon: "video" },
+    { name: "Pilgrimage Travel", link: "/travel", icon: "car-side" },
+    { name: "Find Temples", link: "#TempleFinder", icon: "om", isAnchor: true }
+  ];
 
   return (
     <nav className="bg-gradient-to-r from-amber-800 to-amber-600 text-white shadow-lg sticky top-0 z-50">
@@ -92,31 +98,76 @@ function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex space-x-6 items-center">
-            <NavLink to="/">Home</NavLink>
+            {/* Home */}
+            <Link to="/" className="relative group py-1 hover:text-amber-200 transition duration-300">
+              Home
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
+            </Link>
 
-            <NavLink to="#Services" isAnchor onClick={(e) => handleScroll(e, "Services")}>
-              Services
-            </NavLink>
-            
-            <NavLink to="#TempleFinder" isAnchor onClick={(e) => handleScroll(e, "TempleFinder")}>
-              Temples
-            </NavLink>
-            
-            <NavLink to="/live-streaming">Live Darshan</NavLink>
-            
-            <NavLink to="/prasadam">Prasadam</NavLink>
+            {/* Services Dropdown */}
+            <div 
+              className="relative"
+              onMouseEnter={() => handleMouseEnter('services')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button className="relative group py-1 hover:text-amber-200 transition duration-300 flex items-center gap-1">
+                Services
+                <i className="fas fa-chevron-down text-xs ml-1 transition-transform duration-300 group-hover:rotate-180"></i>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
+              </button>
+              {openDropdown === 'services' && (
+                <div className="absolute left-0 mt-2 w-56 bg-white text-gray-800 rounded-lg shadow-lg z-50">
+                  {servicesItems.map((item, index) => (
+                    item.isAnchor ? (
+                      <a
+                        key={index}
+                        href={item.link}
+                        onClick={(e) => {
+                          handleScroll(e, item.link.substring(1));
+                          setOpenDropdown(null);
+                        }}
+                        className="block px-4 py-2 hover:bg-amber-50 transition text-sm first:rounded-t-lg last:rounded-b-lg"
+                      >
+                        <i className={`fas fa-${item.icon} w-5 mr-2 text-amber-600`}></i>
+                        {item.name}
+                      </a>
+                    ) : (
+                      <Link
+                        key={index}
+                        to={item.link}
+                        onClick={() => setOpenDropdown(null)}
+                        className="block px-4 py-2 hover:bg-amber-50 transition text-sm first:rounded-t-lg last:rounded-b-lg"
+                      >
+                        <i className={`fas fa-${item.icon} w-5 mr-2 text-amber-600`}></i>
+                        {item.name}
+                      </Link>
+                    )
+                  ))}
+                </div>
+              )}
+            </div>
 
-            {/* ✅ Pilgrimage Travel - Shows for both logged in and logged out */}
-            <NavLink to="/travel">Pilgrimage Travel</NavLink>
+            {/* About Us - Normal Link */}
+            <Link to="/about" className="relative group py-1 hover:text-amber-200 transition duration-300">
+              About Us
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
+            </Link>
+
+            {/* Contact Us - Normal Link */}
+            <Link to="/contact-us" className="relative group py-1 hover:text-amber-200 transition duration-300">
+              Contact Us
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
+            </Link>
+
+            {/* Careers - Normal Link */}
+            <Link to="/careers" className="relative group py-1 hover:text-amber-200 transition duration-300">
+              Careers
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
+            </Link>
 
             {user ? (
               <>
-                <NavLink to="/pooja-booking">Pooja Booking</NavLink>
-                <NavLink to="/charity">Charity</NavLink>
-                <NavLink to="/samagri">Samagri</NavLink>
-                
-                <NavLink to="/About">About Us</NavLink>
-
+                {/* User Dropdown - NotificationBell removed */}
                 <div className="relative group">
                   <button className="flex items-center gap-2 hover:text-amber-200 transition duration-300 py-1">
                     {profilePic ? (
@@ -153,8 +204,10 @@ function Navbar() {
               </>
             ) : (
               <>
-                <NavLink to="/About">About Us</NavLink>
-                <NavLink to="/login">Login</NavLink>
+                <Link to="/login" className="relative group py-1 hover:text-amber-200 transition duration-300">
+                  Login
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
+                </Link>
                 <Link
                   to="/signup"
                   className="bg-white text-amber-700 px-5 py-2 rounded-full font-semibold hover:bg-amber-50 hover:scale-105 transition-all duration-300 shadow-md"
@@ -167,60 +220,65 @@ function Navbar() {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`lg:hidden transition-all duration-300 overflow-hidden ${isMenuOpen ? "max-h-96 mt-4" : "max-h-0"}`}>
+        <div className={`lg:hidden transition-all duration-300 overflow-hidden ${isMenuOpen ? "max-h-[600px] mt-4" : "max-h-0"}`}>
           {isMenuOpen && (
-            <div className="space-y-3 pb-3">
-              <Link to="/" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+            <div className="space-y-2 pb-3">
+              <Link to="/" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
                 Home
               </Link>
-              <a
-                href="#Services"
-                onClick={(e) => handleScroll(e, "Services")}
-                className="block hover:text-amber-200 transition py-1"
-              >
-                Services
-              </a>
-              <a
-                href="#TempleFinder"
-                onClick={(e) => handleScroll(e, "TempleFinder")}
-                className="block hover:text-amber-200 transition py-1"
-              >
-                Temples
-              </a>
-              <Link to="/live-streaming" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
-                Live Darshan
+
+              {/* Services Dropdown in Mobile */}
+              <div>
+                <button 
+                  className="flex items-center justify-between w-full py-2 hover:text-amber-200 transition"
+                  onClick={() => setOpenDropdown(openDropdown === 'mobile-services' ? null : 'mobile-services')}
+                >
+                  <span><i className="fas fa-hands-helping w-5 mr-2"></i>Services</span>
+                  <i className={`fas fa-chevron-${openDropdown === 'mobile-services' ? 'up' : 'down'} text-xs transition`}></i>
+                </button>
+                {openDropdown === 'mobile-services' && (
+                  <div className="pl-4 space-y-2 border-l-2 border-amber-400 ml-2">
+                    <Link to="/pooja-booking" className="block py-1 text-sm hover:text-amber-200" onClick={() => setIsMenuOpen(false)}>
+                      <i className="fas fa-praying-hands w-4 mr-2"></i>Pooja Booking
+                    </Link>
+                    <Link to="/charity" className="block py-1 text-sm hover:text-amber-200" onClick={() => setIsMenuOpen(false)}>
+                      <i className="fas fa-hand-holding-heart w-4 mr-2"></i>Charity
+                    </Link>
+                    <Link to="/samagri" className="block py-1 text-sm hover:text-amber-200" onClick={() => setIsMenuOpen(false)}>
+                      <i className="fas fa-shopping-bag w-4 mr-2"></i>Samagri
+                    </Link>
+                    <Link to="/prasadam" className="block py-1 text-sm hover:text-amber-200" onClick={() => setIsMenuOpen(false)}>
+                      <i className="fas fa-gift w-4 mr-2"></i>Prasadam
+                    </Link>
+                    <Link to="/live-streaming" className="block py-1 text-sm hover:text-amber-200" onClick={() => setIsMenuOpen(false)}>
+                      <i className="fas fa-video w-4 mr-2"></i>Live Darshan
+                    </Link>
+                    <Link to="/travel" className="block py-1 text-sm hover:text-amber-200" onClick={() => setIsMenuOpen(false)}>
+                      <i className="fas fa-car-side w-4 mr-2"></i>Pilgrimage Travel
+                    </Link>
+                    <a href="#TempleFinder" className="block py-1 text-sm hover:text-amber-200" onClick={(e) => { handleScroll(e, "TempleFinder"); setIsMenuOpen(false); }}>
+                      <i className="fas fa-temple w-4 mr-2"></i>Find Temples
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              <Link to="/about" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
+                About Us
               </Link>
-              <Link to="/prasadam" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
-                Prasadam
+              <Link to="/contact-us" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
+                Contact Us
               </Link>
-              
-              {/* ✅ Pilgrimage Travel in mobile menu */}
-              <Link to="/travel" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
-                Pilgrimage Travel
+              <Link to="/careers" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
+                Careers
               </Link>
 
               {user ? (
                 <>
-                  <Link to="/pooja-booking" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
-                    Pooja Booking
-                  </Link>
-                  <Link to="/charity" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
-                    Charity
-                  </Link>
-                  <Link to="/samagri" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
-                    Samagri
-                  </Link>
-                  <Link to="/About" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
-                    About Us
-                  </Link>
                   <hr className="border-amber-500/30 my-2" />
                   <div className="flex items-center gap-2 text-sm text-amber-200 py-1">
                     {profilePic ? (
-                      <img 
-                        src={profilePic} 
-                        alt={user.name}
-                        className="w-6 h-6 rounded-full object-cover"
-                      />
+                      <img src={profilePic} alt={user.name} className="w-6 h-6 rounded-full object-cover" />
                     ) : (
                       <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 text-xs font-bold">
                         {user.name?.charAt(0).toUpperCase()}
@@ -228,29 +286,19 @@ function Navbar() {
                     )}
                     {user.name}
                   </div>
-                  <Link to="/profile" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/profile" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
                     My Profile
                   </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left hover:text-amber-200 transition py-1"
-                  >
+                  <button onClick={handleLogout} className="block w-full text-left hover:text-amber-200 transition py-2">
                     Logout
                   </button>
                 </>
               ) : (
                 <>
-                  <Link to="/About" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
-                    About Us
-                  </Link>
-                  <Link to="/login" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/login" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
                     Login
                   </Link>
-                  <Link
-                    to="/signup"
-                    className="block bg-white text-amber-700 px-4 py-2 rounded-lg text-center hover:bg-amber-50 transition mt-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
+                  <Link to="/signup" className="block bg-white text-amber-700 px-4 py-2 rounded-lg text-center hover:bg-amber-50 transition mt-2" onClick={() => setIsMenuOpen(false)}>
                     Sign Up Free
                   </Link>
                 </>

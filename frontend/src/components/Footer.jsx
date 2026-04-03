@@ -98,6 +98,16 @@ const Footer = () => {
                             </Link>
                         </li>
                         <li>
+                            <Link to="/travel" className="hover:text-orange-400 transition flex items-center gap-2">
+                                <i className="fas fa-car-side text-xs"></i> Pilgrimage Travel
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/live-streaming" className="hover:text-orange-400 transition flex items-center gap-2">
+                                <i className="fas fa-video text-xs"></i> Live Darshan
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="/#temples" className="hover:text-orange-400 transition flex items-center gap-2">
                                 <i className="fas fa-om text-xs"></i> Temples
                             </Link>
@@ -105,7 +115,7 @@ const Footer = () => {
                     </ul>
                 </div>
 
-                {/* Services */}
+                {/* Services & Support */}
                 <div>
                     <h3 className="text-lg font-semibold mb-3 text-orange-400">Services</h3>
                     <ul className="space-y-2 text-gray-400">
@@ -123,6 +133,29 @@ const Footer = () => {
                         </li>
                         <li className="flex items-center gap-2">
                             <i className="fas fa-check-circle text-green-500 text-xs"></i> AI Spiritual Assistant
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <i className="fas fa-check-circle text-green-500 text-xs"></i> Cab & Hotel Booking
+                        </li>
+                    </ul>
+                    
+                    {/* Support Links */}
+                    <h3 className="text-lg font-semibold mb-3 mt-6 text-orange-400">Support</h3>
+                    <ul className="space-y-2 text-gray-400">
+                        <li>
+                            <Link to="/contact-us" className="hover:text-orange-400 transition flex items-center gap-2">
+                                <i className="fas fa-envelope text-xs"></i> Contact Us
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/careers" className="hover:text-orange-400 transition flex items-center gap-2">
+                                <i className="fas fa-briefcase text-xs"></i> Careers
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/faq" className="hover:text-orange-400 transition flex items-center gap-2">
+                                <i className="fas fa-question-circle text-xs"></i> FAQ
+                            </Link>
                         </li>
                     </ul>
                 </div>
@@ -143,7 +176,7 @@ const Footer = () => {
                         </p>
                         <p className="text-gray-400 flex items-center gap-2 text-sm">
                             <i className="fas fa-map-marker-alt text-orange-400"></i>
-                            India
+                            Bhubaneswar, Odisha, India
                         </p>
                     </div>
                     
@@ -161,6 +194,9 @@ const Footer = () => {
                         <a href="#" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-orange-500 transition group">
                             <i className="fab fa-youtube text-gray-400 group-hover:text-white text-sm"></i>
                         </a>
+                        <a href="#" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-orange-500 transition group">
+                            <i className="fab fa-linkedin-in text-gray-400 group-hover:text-white text-sm"></i>
+                        </a>
                     </div>
                     
                     {/* Trust Badge */}
@@ -171,6 +207,9 @@ const Footer = () => {
                             <span className="mx-1">•</span>
                             <i className="fas fa-lock text-green-500"></i>
                             <span>Privacy Protected</span>
+                            <span className="mx-1">•</span>
+                            <i className="fas fa-credit-card text-green-500"></i>
+                            <span>100% Secure</span>
                         </div>
                     </div>
                 </div>
@@ -186,6 +225,7 @@ const Footer = () => {
                         <Link to="/privacy" className="hover:text-orange-400 transition">Privacy Policy</Link>
                         <Link to="/terms" className="hover:text-orange-400 transition">Terms & Conditions</Link>
                         <Link to="/refund" className="hover:text-orange-400 transition">Refund Policy</Link>
+                        <Link to="/sitemap" className="hover:text-orange-400 transition">Sitemap</Link>
                     </div>
                 </div>
             </div>
@@ -194,11 +234,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
-
-
-
-
-
-
-
