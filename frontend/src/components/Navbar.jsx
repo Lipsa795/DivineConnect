@@ -1,11 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import API_BASE_URL from "../config";
+import axios from "axios";
 
 function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [profilePic, setProfilePic] = useState(null);
+
+  // Fetch profile picture
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      if (token && user) {
+        try {
+          const response = await axios.get(`${API_BASE_URL}/api/auth/profile`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (response.data.profilePic) {
+            setProfilePic(response.data.profilePic);
+          }
+        } catch (error) {
+          console.error('Error fetching profile pic:', error);
+        }
+      }
+    };
+    
+    fetchProfilePic();
+  }, [token, user]);
 
   const handleLogout = () => {
     logout();
@@ -81,8 +104,6 @@ function Navbar() {
             
             <NavLink to="/live-streaming">Live Darshan</NavLink>
             
-            <NavLink to="/About">About Us</NavLink>
-
             <NavLink to="/prasadam">Prasadam</NavLink>
 
             {user ? (
@@ -90,10 +111,23 @@ function Navbar() {
                 <NavLink to="/pooja-booking">Pooja Booking</NavLink>
                 <NavLink to="/charity">Charity</NavLink>
                 <NavLink to="/samagri">Samagri</NavLink>
+                
+                {/* About Us moved here - before user dropdown */}
+                <NavLink to="/About">About Us</NavLink>
 
                 <div className="relative group">
                   <button className="flex items-center gap-2 hover:text-amber-200 transition duration-300 py-1">
-                    <i className="fas fa-user-circle"></i>
+                    {profilePic ? (
+                      <img 
+                        src={profilePic} 
+                        alt={user.name}
+                        className="w-8 h-8 rounded-full object-cover border-2 border-white"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center text-amber-700 text-sm font-bold">
+                        {user.name?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
                     {user.name}
                     <i className="fas fa-chevron-down text-xs transition-transform duration-300 group-hover:rotate-180"></i>
                   </button>
@@ -103,6 +137,9 @@ function Navbar() {
                       <p className="text-xs text-gray-500">Signed in as</p>
                       <p className="text-sm font-semibold text-amber-800 truncate">{user.email}</p>
                     </div>
+                    <Link to="/profile" className="block w-full text-left px-4 py-2 hover:bg-gray-100 transition">
+                      <i className="fas fa-user mr-2"></i>My Profile
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100 transition text-red-600"
@@ -114,6 +151,9 @@ function Navbar() {
               </>
             ) : (
               <>
+                {/* About Us moved here - before Login/Signup */}
+                <NavLink to="/About">About Us</NavLink>
+                
                 <NavLink to="/login">Login</NavLink>
                 <Link
                   to="/signup"
@@ -150,9 +190,6 @@ function Navbar() {
               <Link to="/live-streaming" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
                 Live Darshan
               </Link>
-              <Link to="/About" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
-                About Us
-              </Link>
               <Link to="/prasadam" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
                 Prasadam
               </Link>
@@ -168,8 +205,28 @@ function Navbar() {
                   <Link to="/samagri" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
                     Samagri
                   </Link>
+                  {/* About Us in mobile menu */}
+                  <Link to="/About" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                    About Us
+                  </Link>
                   <hr className="border-amber-500/30 my-2" />
-                  <div className="text-sm text-amber-200 py-1">{user.name}</div>
+                  <div className="flex items-center gap-2 text-sm text-amber-200 py-1">
+                    {profilePic ? (
+                      <img 
+                        src={profilePic} 
+                        alt={user.name}
+                        className="w-6 h-6 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 text-xs font-bold">
+                        {user.name?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    {user.name}
+                  </div>
+                  <Link to="/profile" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                    My Profile
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left hover:text-amber-200 transition py-1"
@@ -179,6 +236,10 @@ function Navbar() {
                 </>
               ) : (
                 <>
+                  {/* About Us before Login/Signup in mobile menu */}
+                  <Link to="/About" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                    About Us
+                  </Link>
                   <Link to="/login" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
                     Login
                   </Link>

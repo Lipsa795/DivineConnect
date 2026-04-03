@@ -62,5 +62,14 @@ router.post('/verify-payment', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Verification failed', error: error.message });
   }
 });
+// Get user's samagri orders
+router.get('/my-orders', authMiddleware, async (req, res) => {
+  try {
+    const orders = await Samagri.find({ userId: req.userId }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching orders' });
+  }
+});
 
 module.exports = router;

@@ -63,4 +63,14 @@ router.post('/verify-donation', authMiddleware, async (req, res) => {
   }
 });
 
+// Get user's donations
+router.get('/my-donations', authMiddleware, async (req, res) => {
+  try {
+    const donations = await Charity.find({ userId: req.userId }).sort({ createdAt: -1 });
+    res.json(donations);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching donations' });
+  }
+});
+
 module.exports = router;

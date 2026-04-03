@@ -33,4 +33,5 @@ const CharitySchema = new mongoose.Schema({
   }
 });
 
+
 module.exports = mongoose.model('Charity', CharitySchema);
