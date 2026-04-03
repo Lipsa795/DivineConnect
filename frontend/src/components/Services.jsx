@@ -7,42 +7,43 @@ function Services() {
 
   const services = [
     {
-      icon: "🙏",
       title: "Pooja & Samagri Services",
       description: "Book pooja with free samagri delivery",
       link: "/samagri",
-      color: "from-red-500 to-orange-500",
-      features: ["Free Samagri", "Doorstep Delivery", "Expert Priests"],
+      image: "/images/pooja.jpeg",
+      gradient: "from-orange-500/60 to-transparent",
+      features: ["Free Samagri", "Doorstep Delivery", "Expert Pandits"],
     },
     {
-      icon: "🍛",
       title: "Prasadam",
       description: "Receive blessed prasadam delivered to your home",
       link: "/prasadam",
-      color: "from-green-500 to-teal-500",
+      image: "/images/prasad.jpeg",
+      gradient: "from-green-500/60 to-transparent",
       features: ["Temple Blessed", "Pan India Delivery", "Multiple Varieties"],
     },
     {
-      icon: "❤️",
       title: "Charity & Donations",
       description: "Support temples and spiritual causes",
       link: "/charity",
-      color: "from-pink-500 to-rose-500",
+      image: "/images/donation.jpeg",
+      gradient: "from-pink-500/60 to-transparent",
       features: ["Tax Benefits", "Transparent", "Multiple Causes"],
     },
     {
-      icon: "📺",
       title: "Live Darshan",
       description: "Watch live aartis and temple ceremonies from anywhere",
       link: "/live-streaming",
-      color: "from-purple-500 to-pink-500",
+      image: "/images/livestream.jpeg",
+      gradient: "from-purple-500/60 to-transparent",
       features: ["Temple Aartis", "Spiritual Discourses", "24/7 Live Streams"],
     },
   ];
 
   return (
-    <section id="Services" className="py-16">
+    <section className="py-16 bg-gradient-to-b from-white to-amber-50">
       <div className="container mx-auto px-4">
+        {/* Heading */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-amber-900 mb-4">
             Our Services
@@ -52,30 +53,47 @@ function Services() {
           </p>
         </div>
 
-        {/* Changed to md:grid-cols-4 for 4 boxes, and added auto-rows-fr for equal height */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, index) => (
             <Link
               key={index}
               to={service.link}
-              className={`bg-gradient-to-br ${service.color} p-6 rounded-xl text-white shadow-lg transform hover:scale-105 transition-all duration-300 group flex flex-col h-full`}
+              className="rounded-2xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-all duration-300"
             >
-              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
-                {service.icon}
+              {/* Image */}
+              <div className="relative h-48">
+                <img
+                  src={service.image}
+                  alt={service.title}
+                  className="w-full h-full object-cover"
+                />
+
+                {/* Soft Gradient Tint (PERFECT FIX) */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-t ${service.gradient} mix-blend-multiply`}
+                ></div>
               </div>
-              <h3 className="text-xl font-bold mb-2 min-h-[56px]">
-                {service.title}
-              </h3>
-              <p className="text-white/90 text-sm mb-3 min-h-[40px]">
-                {service.description}
-              </p>
-              <div className="text-xs text-white/80 space-y-1 flex-grow">
-                {service.features.map((feature, i) => (
-                  <div key={i}>✓ {feature}</div>
-                ))}
-              </div>
-              <div className="mt-4 text-sm font-semibold group-hover:translate-x-2 transition-transform">
-                Learn More →
+
+              {/* Content */}
+              <div className="p-5">
+                <h3 className="text-lg font-bold text-gray-800 mb-2">
+                  {service.title}
+                </h3>
+
+                <p className="text-sm text-gray-600 mb-3">
+                  {service.description}
+                </p>
+
+                <div className="text-xs text-gray-500 space-y-1 mb-3">
+                  {service.features.map((f, i) => (
+                    <div key={i}>✓ {f}</div>
+                  ))}
+                </div>
+
+                <div className="text-sm font-semibold text-orange-500 hover:translate-x-1 transition">
+                  Learn More →
+                </div>
               </div>
             </Link>
           ))}
