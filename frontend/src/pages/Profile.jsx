@@ -14,7 +14,9 @@ function Profile() {
   const [prasadamOrders, setPrasadamOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [profilePic, setProfilePic] = useState(null);
-  const [showPicUpload, setShowPicUpload] = useState(false);
+  const [showPicModal, setShowPicModal] = useState(false);
+  const [previewPic, setPreviewPic] = useState(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   // Load all user data
   useEffect(() => {
@@ -77,11 +79,10 @@ function Profile() {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           
-          // Set max dimensions (200x200 pixels)
           let width = img.width;
           let height = img.height;
-          const maxWidth = 200;
-          const maxHeight = 200;
+          const maxWidth = 300;
+          const maxHeight = 300;
           
           if (width > height) {
             if (width > maxWidth) {
@@ -99,7 +100,6 @@ function Profile() {
           canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
           
-          // Compress to JPEG with 0.7 quality
           const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
           resolve(compressedDataUrl);
         };
@@ -109,34 +109,63 @@ function Profile() {
     });
   };
 
-  // Handle profile picture upload to backend
-  const handleProfilePicUpload = async (e) => {
+  // Handle file selection for profile picture
+  const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Check file size (max 1MB)
       if (file.size > 1024 * 1024) {
         alert('Please select an image smaller than 1MB');
         return;
       }
       
-      setLoading(true);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewPic(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Update profile picture
+  const handleUpdateProfilePic = async () => {
+    if (!previewPic) return;
+    
+    setUploadLoading(true);
+    try {
+      const response = await axios.put(`${API_BASE_URL}/api/auth/profile-pic`, 
+        { profilePic: previewPic },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      setProfilePic(response.data.profilePic);
+      setShowPicModal(false);
+      setPreviewPic(null);
+      alert('Profile picture updated successfully!');
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert(error.response?.data?.message || 'Failed to update profile picture');
+    } finally {
+      setUploadLoading(false);
+    }
+  };
+
+  // Remove profile picture
+  const handleRemoveProfilePic = async () => {
+    if (confirm('Remove your profile picture?')) {
+      setUploadLoading(true);
       try {
-        const compressedPic = await compressImage(file);
-        
-        // Upload to backend
-        const response = await axios.put(`${API_BASE_URL}/api/auth/profile-pic`, 
-          { profilePic: compressedPic },
+        await axios.put(`${API_BASE_URL}/api/auth/profile-pic`, 
+          { profilePic: null },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
-        setProfilePic(response.data.profilePic);
-        setShowPicUpload(false);
-        alert('Profile picture updated successfully!');
+        setProfilePic(null);
+        setShowPicModal(false);
+        alert('Profile picture removed');
       } catch (error) {
-        console.error('Upload error:', error);
-        alert(error.response?.data?.message || 'Failed to update profile picture');
+        alert('Failed to remove profile picture');
       } finally {
-        setLoading(false);
+        setUploadLoading(false);
       }
     }
   };
@@ -184,36 +213,30 @@ function Profile() {
             <div className="bg-gradient-to-r from-amber-700 to-amber-600 h-32 relative">
               <div className="absolute -bottom-16 left-8">
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-full bg-white p-1 shadow-lg">
-                    {profilePic ? (
-                      <img 
-                        src={profilePic} 
-                        alt={user?.name}
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center text-5xl">
-                        {user?.name?.charAt(0) || '👤'}
-                      </div>
-                    )}
-                  </div>
+                  {/* Clickable Profile Picture */}
                   <button 
-                    onClick={() => setShowPicUpload(!showPicUpload)}
-                    className="absolute bottom-0 right-0 bg-amber-700 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-amber-800 transition"
+                    onClick={() => setShowPicModal(true)}
+                    className="group relative"
                   >
-                    <i className="fas fa-camera text-sm"></i>
+                    <div className="w-32 h-32 rounded-full bg-white p-1 shadow-lg transition-transform hover:scale-105">
+                      {profilePic ? (
+                        <img 
+                          src={profilePic} 
+                          alt={user?.name}
+                          className="w-full h-full rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center text-6xl">
+                          {user?.name?.charAt(0) || '👤'}
+                        </div>
+                      )}
+                    </div>
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                      <i className="fas fa-camera text-white text-2xl"></i>
+                    </div>
                   </button>
                 </div>
-                {showPicUpload && (
-                  <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg p-2 z-10">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleProfilePicUpload}
-                      className="text-sm"
-                    />
-                  </div>
-                )}
               </div>
             </div>
             
@@ -462,7 +485,101 @@ function Profile() {
           </div>
         </div>
       </div>
-      
+
+      {/* Profile Picture Modal */}
+      {showPicModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setShowPicModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="bg-gradient-to-r from-amber-800 to-amber-600 px-6 py-4 flex justify-between items-center">
+              <h3 className="text-white text-xl font-semibold">Profile Picture</h3>
+              <button onClick={() => setShowPicModal(false)} className="text-white hover:text-amber-200 transition text-2xl">
+                &times;
+              </button>
+            </div>
+
+            {/* Image Preview */}
+            <div className="p-6 text-center">
+              <div className="relative inline-block">
+                <div className="w-48 h-48 rounded-full overflow-hidden bg-gradient-to-br from-amber-100 to-orange-100 mx-auto shadow-lg">
+                  {previewPic ? (
+                    <img 
+                      src={previewPic} 
+                      alt={user?.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : profilePic ? (
+                    <img 
+                      src={profilePic} 
+                      alt={user?.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-7xl">
+                      {user?.name?.charAt(0).toUpperCase() || '👤'}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Change Photo Button */}
+                <label className="absolute bottom-0 right-0 bg-amber-700 text-white rounded-full w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-amber-800 transition shadow-lg">
+                  <i className="fas fa-camera text-sm"></i>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+              
+              <p className="text-gray-600 mt-4 font-medium">{user?.name}</p>
+              <p className="text-gray-400 text-xs mt-1">
+                Click the camera icon to change your photo
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="px-6 pb-6 flex gap-3">
+              {previewPic && (
+                <button
+                  onClick={handleUpdateProfilePic}
+                  disabled={uploadLoading}
+                  className="flex-1 bg-amber-700 text-white py-2 rounded-lg hover:bg-amber-800 transition disabled:opacity-50"
+                >
+                  {uploadLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <i className="fas fa-spinner fa-spin"></i>
+                      Updating...
+                    </span>
+                  ) : (
+                    'Save Changes'
+                  )}
+                </button>
+              )}
+              
+              {profilePic && !previewPic && (
+                <button
+                  onClick={handleRemoveProfilePic}
+                  disabled={uploadLoading}
+                  className="flex-1 border border-red-500 text-red-500 py-2 rounded-lg hover:bg-red-50 transition disabled:opacity-50"
+                >
+                  Remove Photo
+                </button>
+              )}
+            </div>
+
+            {/* Info Text */}
+            <div className="px-6 pb-6 text-center">
+              <p className="text-xs text-gray-400">
+                <i className="fas fa-info-circle mr-1"></i>
+                Recommended: Square image, max 1MB
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
