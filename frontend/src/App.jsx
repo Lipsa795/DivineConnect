@@ -16,6 +16,7 @@ import LoadingAnimation from "./components/LoadingAnimation";
 import LiveStreaming from "./pages/LiveStreaming";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
+import PilgrimageTravel from "./pages/PilgrimageTravel";
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuth();
@@ -40,6 +41,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/temple/:id" element={<TempleDetails />} />
+            <Route path="/travel" element={<PilgrimageTravel />} />
+            <Route path="/travel" element={<ProtectedRoute><PilgrimageTravel /></ProtectedRoute>} />
+
+
             <Route
               path="/pooja-booking"
               element={

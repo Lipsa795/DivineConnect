@@ -17,6 +17,7 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/charity', require('./routes/charity'));
+app.use('/api/travel', require('./routes/travel'));
 app.use('/api/samagri', require('./routes/samagri'));
 app.use('/api/temples', require('./routes/temples'));
 app.use('/api/places', require('./routes/places'));
@@ -24,7 +25,8 @@ app.use('/api/places', require('./routes/places'));
 app.use('/api/prasadam', require('./routes/prasadam'));
 // Add this with other routes
 app.use('/api/auth', require('./routes/forgot-password'));
-app.use('/api/chatbot', require('./routes/chatbot')); // Add this line
+app.use('/api/chatbot', require('./routes/chatbot'));
+app.use('/api/ola-maps', require('./routes/ola-maps')); // Add this line
 // Add this route after your middleware
 app.use('/api/youtube', require('./routes/youtube'));
 app.get('/', (req, res) => {

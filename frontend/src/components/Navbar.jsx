@@ -106,13 +106,15 @@ function Navbar() {
             
             <NavLink to="/prasadam">Prasadam</NavLink>
 
+            {/* ✅ Pilgrimage Travel - Shows for both logged in and logged out */}
+            <NavLink to="/travel">Pilgrimage Travel</NavLink>
+
             {user ? (
               <>
                 <NavLink to="/pooja-booking">Pooja Booking</NavLink>
                 <NavLink to="/charity">Charity</NavLink>
                 <NavLink to="/samagri">Samagri</NavLink>
                 
-                {/* About Us moved here - before user dropdown */}
                 <NavLink to="/About">About Us</NavLink>
 
                 <div className="relative group">
@@ -151,9 +153,7 @@ function Navbar() {
               </>
             ) : (
               <>
-                {/* About Us moved here - before Login/Signup */}
                 <NavLink to="/About">About Us</NavLink>
-                
                 <NavLink to="/login">Login</NavLink>
                 <Link
                   to="/signup"
@@ -193,6 +193,11 @@ function Navbar() {
               <Link to="/prasadam" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
                 Prasadam
               </Link>
+              
+              {/* ✅ Pilgrimage Travel in mobile menu */}
+              <Link to="/travel" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
+                Pilgrimage Travel
+              </Link>
 
               {user ? (
                 <>
@@ -205,7 +210,6 @@ function Navbar() {
                   <Link to="/samagri" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
                     Samagri
                   </Link>
-                  {/* About Us in mobile menu */}
                   <Link to="/About" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
                     About Us
                   </Link>
@@ -236,7 +240,6 @@ function Navbar() {
                 </>
               ) : (
                 <>
-                  {/* About Us before Login/Signup in mobile menu */}
                   <Link to="/About" className="block hover:text-amber-200 transition py-1" onClick={() => setIsMenuOpen(false)}>
                     About Us
                   </Link>
