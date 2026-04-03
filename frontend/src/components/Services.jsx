@@ -41,7 +41,6 @@ function Services() {
   ];
 
   return (
-    // ✅ REMOVED bg-gray-50 - now transparent to show single background
     <section id="Services" className="py-16">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
@@ -53,26 +52,31 @@ function Services() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        {/* Changed to md:grid-cols-4 for 4 boxes, and added auto-rows-fr for equal height */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
           {services.map((service, index) => (
             <Link
               key={index}
               to={service.link}
-              className={`bg-gradient-to-br ${service.color} p-6 rounded-xl text-white shadow-lg transform hover:scale-105 transition-all duration-300 group`}
+              className={`bg-gradient-to-br ${service.color} p-6 rounded-xl text-white shadow-lg transform hover:scale-105 transition-all duration-300 group flex flex-col h-full`}
             >
               <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
                 {service.icon}
               </div>
-              <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-              <p className="text-white/90 text-sm mb-3">
+              <h3 className="text-xl font-bold mb-2 min-h-[56px]">
+                {service.title}
+              </h3>
+              <p className="text-white/90 text-sm mb-3 min-h-[40px]">
                 {service.description}
               </p>
-              <div className="text-xs text-white/80 space-y-1">
+              <div className="text-xs text-white/80 space-y-1 flex-grow">
                 {service.features.map((feature, i) => (
                   <div key={i}>✓ {feature}</div>
                 ))}
               </div>
-              <div className="mt-4 text-sm font-semibold">Learn More →</div>
+              <div className="mt-4 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Learn More →
+              </div>
             </Link>
           ))}
         </div>

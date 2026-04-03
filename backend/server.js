@@ -23,6 +23,7 @@ app.use('/api/places', require('./routes/places'));
 // Add this with other routes
 app.use('/api/prasadam', require('./routes/prasadam'));
 // Add this with other routes
+app.use('/api/auth', require('./routes/forgot-password'));
 app.use('/api/chatbot', require('./routes/chatbot')); // Add this line
 // Add this route after your middleware
 app.use('/api/youtube', require('./routes/youtube'));

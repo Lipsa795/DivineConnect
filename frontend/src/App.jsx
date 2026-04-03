@@ -14,6 +14,8 @@ import Chatbot from './components/Chatbot';
 import BackgroundMusic from './components/BackgroundMusic';
 import LoadingAnimation from './components/LoadingAnimation';
 import LiveStreaming from './pages/LiveStreaming';
+import ResetPassword from './pages/ResetPassword';
+
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuth();
@@ -43,6 +45,8 @@ function App() {
             <Route path="/samagri" element={<ProtectedRoute><SamagriBooking /></ProtectedRoute>} />
             <Route path="/prasadam" element={<ProtectedRoute><Prasadam /></ProtectedRoute>} />
             <Route path="/live-streaming" element={<LiveStreaming />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+
 
           </Routes>
           <Chatbot />

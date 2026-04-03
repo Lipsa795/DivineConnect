@@ -1,18 +1,25 @@
 import sys
 input = sys.stdin.readline
+
 MOD = 10**9 + 7
+N = 2000
 
+# factorial
+f = [1]*(N+1)
+for i in range(1, N+1):
+    f[i] = f[i-1]*i % MOD
+
+# inverse factorial
+inv = [1]*(N+1)
+inv[N] = pow(f[N], MOD-2, MOD)
+for i in range(N, 0, -1):
+    inv[i-1] = inv[i]*i % MOD
+
+# queries
 t = int(input())
-arr = [int(input()) for _ in range(t)]
-mx = max(arr)
-
-dp = [0] * (mx + 1)
-
-dp[1] = 2
-if mx >= 2:
-    dp[2] = 3
-
-for i in range(3, mx + 1):
-    dp[i] = (dp[i-1] + dp[i-2]) % MOD
-
-print("\n".join(str(dp[n]) for n in arr))
+for _ in range(t):
+    n, r = map(int, input().split())
+    if r > n:
+        print(0)
+    else:
+        print(f[n] * inv[r] % MOD * inv[n-r] % MOD)
