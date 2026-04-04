@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useDarkMode } from "../context/DarkModeContext";
 import API_BASE_URL from "../config";
 import axios from "axios";
 
 function Navbar() {
   const { user, token, logout } = useAuth();
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
@@ -69,15 +71,15 @@ function Navbar() {
 
   // Services Dropdown Items
   const servicesItems = [
-  { name: "Pooja Booking", link: "/pooja-booking", icon: "praying-hands" },
-  { name: "Charity", link: "/charity", icon: "hand-holding-heart" },
-  { name: "Samagri", link: "/samagri", icon: "shopping-bag" },
-  { name: "Prasadam", link: "/prasadam", icon: "gift" },
-  { name: "Live Darshan", link: "/live-streaming", icon: "video" },
-  { name: "3D Temple Explorer", link: "/sketchfab-temples", icon: "cube" },
-  { name: "Pilgrimage Travel", link: "/travel", icon: "car-side" },
-  { name: "Find Temples", link: "#TempleFinder", icon: "om", isAnchor: true }
-];
+    { name: "Pooja Booking", link: "/pooja-booking", icon: "praying-hands" },
+    { name: "Charity", link: "/charity", icon: "hand-holding-heart" },
+    { name: "Samagri", link: "/samagri", icon: "shopping-bag" },
+    { name: "Prasadam", link: "/prasadam", icon: "gift" },
+    { name: "Live Darshan", link: "/live-streaming", icon: "video" },
+    { name: "3D Temple Explorer", link: "/sketchfab-temples", icon: "cube" },
+    { name: "Pilgrimage Travel", link: "/travel", icon: "car-side" },
+    { name: "Find Temples", link: "#TempleFinder", icon: "om", isAnchor: true }
+  ];
 
   return (
     <nav className="bg-gradient-to-r from-amber-800 to-amber-600 text-white shadow-lg sticky top-0 z-50">
@@ -166,9 +168,22 @@ function Navbar() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
             </Link>
 
+            {/* Dark Mode Toggle Button */}
+            <button
+              onClick={toggleDarkMode}
+              className="relative group py-1 hover:text-amber-200 transition duration-300 px-3 py-2 rounded-lg hover:bg-white/10"
+              aria-label="Toggle Dark Mode"
+            >
+              {isDarkMode ? (
+                <i className="fas fa-sun text-yellow-300 text-xl"></i>
+              ) : (
+                <i className="fas fa-moon text-gray-200 text-xl"></i>
+              )}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
+            </button>
+
             {user ? (
               <>
-                {/* User Dropdown - NotificationBell removed */}
                 <div className="relative group">
                   <button className="flex items-center gap-2 hover:text-amber-200 transition duration-300 py-1">
                     {profilePic ? (
@@ -273,6 +288,22 @@ function Navbar() {
               <Link to="/careers" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
                 Careers
               </Link>
+
+              {/* Dark Mode Toggle in Mobile Menu */}
+              <button
+                onClick={toggleDarkMode}
+                className="flex items-center gap-2 w-full py-2 hover:text-amber-200 transition"
+              >
+                {isDarkMode ? (
+                  <>
+                    <i className="fas fa-sun text-yellow-300"></i> Light Mode
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-moon"></i> Dark Mode
+                  </>
+                )}
+              </button>
 
               {user ? (
                 <>

@@ -20,6 +20,7 @@ import PilgrimageTravel from "./pages/PilgrimageTravel";
 import ContactUs from "./pages/ContactUs";
 import Careers from "./pages/Careers";
 import SketchfabTemples from './pages/SketchfabTemples';
+import { DarkModeProvider } from './context/DarkModeContext';
 
 
 
@@ -37,6 +38,7 @@ function App() {
   };
 
   return (
+    <DarkModeProvider>
     <AuthProvider>
       <BrowserRouter>
         {isLoading && <LoadingAnimation onComplete={handleLoadingComplete} />}
@@ -112,6 +114,7 @@ function App() {
         </div>
       </BrowserRouter>
     </AuthProvider>
+    </DarkModeProvider>
   );
 }
 

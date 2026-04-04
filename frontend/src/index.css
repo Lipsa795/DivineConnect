@@ -63,3 +63,94 @@ body {
 .animate-slide-out {
   animation: slideOut 0.3s ease-in forwards;
 }
+
+/* Dark Mode Styles */
+.dark body {
+  background: #0f0f1a;
+  color: #e2e8f0;
+}
+
+/* Cards and containers */
+.dark .bg-white {
+  background-color: #1a1a2e !important;
+}
+
+.dark .bg-gray-50,
+.dark .bg-gray-100 {
+  background-color: #16213e !important;
+}
+
+.dark .bg-amber-50 {
+  background-color: #1a1a2e !important;
+}
+
+/* Keep amber colors */
+.dark .text-amber-900,
+.dark .text-amber-800,
+.dark .text-amber-700 {
+  color: #f59e0b !important;
+}
+
+/* Other text */
+.dark .text-gray-600,
+.dark .text-gray-500,
+.dark .text-gray-700 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-gray-800 {
+  color: #cbd5e1 !important;
+}
+
+/* Borders */
+.dark .border-gray-200,
+.dark .border-gray-100,
+.dark .border-amber-100 {
+  border-color: #2d3748 !important;
+}
+
+/* Buttons */
+.dark .bg-amber-700 {
+  background-color: #d97706 !important;
+}
+
+.dark .bg-amber-100 {
+  background-color: #2d3748 !important;
+  color: #f59e0b !important;
+}
+
+/* Footer */
+.dark footer.bg-gray-900 {
+  background-color: #0a0a0f !important;
+}
+
+/* Input fields */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #1a1a2e;
+  border-color: #2d3748;
+  color: #e2e8f0;
+}
+
+/* Service cards gradient adjustment */
+.dark .bg-gradient-to-br {
+  opacity: 0.95;
+}
+
+/* Chatbot */
+.dark .bg-white.rounded-2xl,
+.dark .bg-white.rounded-xl,
+.dark .bg-white.rounded-lg {
+  background-color: #1a1a2e !important;
+}
+
+/* Navbar dark mode */
+.dark .bg-gradient-to-r.from-amber-800.to-amber-600 {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+}
+
+/* Hero section dark mode */
+.dark .hero-section {
+  background-color: #1a1a2e;
+}
