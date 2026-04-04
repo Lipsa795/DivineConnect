@@ -50,25 +50,62 @@ function DarshanSlotManager({ settings, onUpdate, showNotification }) {
   };
 
   const addNewSlot = async () => {
-    if (!newSlot.slotName || !newSlot.startTime || !newSlot.endTime) {
-      showNotification('Please fill all fields', 'error');
+  // Validate inputs
+  if (!newSlot.slotName.trim()) {
+    showNotification('Please enter slot name', 'error');
+    return;
+  }
+  if (!newSlot.startTime) {
+    showNotification('Please select start time', 'error');
+    return;
+  }
+  if (!newSlot.endTime) {
+    showNotification('Please select end time', 'error');
+    return;
+  }
+  
+  setShowAddSlot(false); // Close form immediately for better UX
+  
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      showNotification('Please login again', 'error');
       return;
     }
     
-    try {
-      const updatedSlots = [...(settings.darshanSlots || []), { ...newSlot, _id: Date.now().toString() }];
-      await axios.put(`${API_BASE_URL}/api/temple-admin/darshan-slots`, 
-        { slots: updatedSlots },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-      );
+    const newSlotObj = {
+      slotName: newSlot.slotName,
+      startTime: newSlot.startTime,
+      endTime: newSlot.endTime,
+      maxDevotees: parseInt(newSlot.maxDevotees),
+      isAvailable: true,
+      currentCount: 0
+    };
+    
+    const currentSlots = settings?.darshanSlots || [];
+    const updatedSlots = [...currentSlots, newSlotObj];
+    
+    const response = await axios.put(`${API_BASE_URL}/api/temple-admin/darshan-slots`, 
+      { slots: updatedSlots },
+      { 
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        } 
+      }
+    );
+    
+    if (response.data) {
       showNotification('New darshan slot added!', 'success');
-      setShowAddSlot(false);
       setNewSlot({ slotName: '', startTime: '', endTime: '', maxDevotees: 500, isAvailable: true });
       onUpdate();
-    } catch (error) {
-      showNotification('Error adding slot', 'error');
     }
-  };
+  } catch (error) {
+    console.error('Add slot error:', error);
+    showNotification(error.response?.data?.message || 'Error adding slot', 'error');
+    setShowAddSlot(true); // Re-open form on error
+  }
+};
 
   const getCapacityStatus = (current, max) => {
     const percentage = (current / max) * 100;
