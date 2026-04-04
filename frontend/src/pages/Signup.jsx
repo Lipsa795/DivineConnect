@@ -8,6 +8,7 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('user');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
@@ -28,9 +29,14 @@ function Signup() {
     }
     
     setLoading(true);
-    const result = await signup(name, email, password);
+    const result = await signup(name, email, password, role);
     if (result.success) {
-      navigate('/');
+      // Redirect based on role
+      if (role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } else {
       setError(result.message);
     }
@@ -78,6 +84,38 @@ function Signup() {
             </div>
 
             <div className="mb-4">
+              <label className="block text-gray-700 mb-2">Select Account Type</label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setRole('user')}
+                  className={`p-3 rounded-lg border-2 transition ${
+                    role === 'user'
+                      ? 'border-amber-700 bg-amber-50'
+                      : 'border-gray-200 hover:border-amber-300'
+                  }`}
+                >
+                  <div className="text-2xl mb-1">🙏</div>
+                  <div className="font-semibold">Pilgrim</div>
+                  <div className="text-xs text-gray-500">Book poojas, donate, order prasadam</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('admin')}
+                  className={`p-3 rounded-lg border-2 transition ${
+                    role === 'admin'
+                      ? 'border-amber-700 bg-amber-50'
+                      : 'border-gray-200 hover:border-amber-300'
+                  }`}
+                >
+                  <div className="text-2xl mb-1">🏛️</div>
+                  <div className="font-semibold">Temple Admin</div>
+                  <div className="text-xs text-gray-500">Manage temple, slots, inventory</div>
+                </button>
+              </div>
+            </div>
+
+            <div className="mb-4">
               <label className="block text-gray-700 mb-2">Password</label>
               <input
                 type="password"
@@ -102,7 +140,7 @@ function Signup() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-amber-700 text-white py-3 rounded-lg hover:bg-amber-800 transition disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-amber-700 to-amber-600 text-white py-3 rounded-lg hover:from-amber-800 hover:to-amber-700 transition disabled:opacity-50 font-semibold"
             >
               {loading ? 'Creating Account...' : 'Sign Up'}
             </button>

@@ -7,6 +7,7 @@ import API_BASE_URL from '../config';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [selectedRole, setSelectedRole] = useState('user');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,12 @@ function Login() {
     
     const result = await login(email, password);
     if (result.success) {
-      navigate('/');
+      // Redirect based on the SELECTED role (not just from backend)
+      if (selectedRole === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } else {
       setError(result.message || 'Invalid email or password');
     }
@@ -86,6 +92,39 @@ function Login() {
                   {error}
                 </div>
               )}
+
+              {/* Role Selection at Login */}
+              <div className="mb-6">
+                <label className="block text-gray-700 mb-2 font-medium">Login as</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('user')}
+                    className={`p-3 rounded-lg border-2 transition ${
+                      selectedRole === 'user'
+                        ? 'border-amber-700 bg-amber-50'
+                        : 'border-gray-200 hover:border-amber-300'
+                    }`}
+                  >
+                    <div className="text-2xl mb-1">🙏</div>
+                    <div className="font-semibold">Pilgrim</div>
+                    <div className="text-xs text-gray-500">Book poojas, donate, order prasadam</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('admin')}
+                    className={`p-3 rounded-lg border-2 transition ${
+                      selectedRole === 'admin'
+                        ? 'border-amber-700 bg-amber-50'
+                        : 'border-gray-200 hover:border-amber-300'
+                    }`}
+                  >
+                    <div className="text-2xl mb-1">🏛️</div>
+                    <div className="font-semibold">Temple Admin</div>
+                    <div className="text-xs text-gray-500">Manage temple, slots, inventory</div>
+                  </button>
+                </div>
+              </div>
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
@@ -148,7 +187,7 @@ function Login() {
                   ) : (
                     <span className="flex items-center justify-center gap-2">
                       <i className="fas fa-sign-in-alt"></i>
-                      Sign In
+                      Sign In as {selectedRole === 'admin' ? 'Admin' : 'Pilgrim'}
                     </span>
                   )}
                 </button>

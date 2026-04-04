@@ -21,6 +21,12 @@ import ContactUs from "./pages/ContactUs";
 import Careers from "./pages/Careers";
 import SketchfabTemples from './pages/SketchfabTemples';
 import { DarkModeProvider } from './context/DarkModeContext';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/TempleAdmin/AdminDashboard';
+import TemplePartnership from './pages/TemplePartnership';
+
+
+
 
 
 
@@ -55,10 +61,16 @@ function App() {
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/sketchfab-temples" element={<SketchfabTemples />} />
+            <Route path="/temple-partnership" element={<TemplePartnership />} />
+
 
 
             
             {/* Protected Routes (require login) */}
+            <Route path="/admin-login" element={<AdminLogin />} />
+
+            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+
             <Route
               path="/pooja-booking"
               element={

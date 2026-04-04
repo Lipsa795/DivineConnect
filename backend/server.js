@@ -29,6 +29,8 @@ app.use('/api/chatbot', require('./routes/chatbot'));
 app.use('/api/ola-maps', require('./routes/ola-maps')); // Add this line
 // Add this route after your middleware
 app.use('/api/youtube', require('./routes/youtube'));
+app.use('/api/temple-admin', require('./routes/templeAdmin'));
+app.use('/api/temple-partnership', require('./routes/templePartnership'));
 
 app.get('/', (req, res) => {
   res.json({

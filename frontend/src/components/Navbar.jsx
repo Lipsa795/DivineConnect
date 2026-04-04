@@ -162,9 +162,9 @@ function Navbar() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
             </Link>
 
-            {/* Careers - Normal Link */}
-            <Link to="/careers" className="relative group py-1 hover:text-amber-200 transition duration-300">
-              Careers
+            {/* Partner - Normal Link (Replaced Careers) */}
+            <Link to="/temple-partnership" className="relative group py-1 hover:text-amber-200 transition duration-300">
+              Partner
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-200 group-hover:w-full transition-all duration-300"></span>
             </Link>
 
@@ -285,8 +285,10 @@ function Navbar() {
               <Link to="/contact-us" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
                 Contact Us
               </Link>
-              <Link to="/careers" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
-                Careers
+              
+              {/* Partner - Mobile Menu (Replaced Careers) */}
+              <Link to="/temple-partnership" className="block hover:text-amber-200 transition py-2" onClick={() => setIsMenuOpen(false)}>
+                Partner
               </Link>
 
               {/* Dark Mode Toggle in Mobile Menu */}

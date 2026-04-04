@@ -113,6 +113,12 @@ const Footer = () => {
                                 <i className="fas fa-om text-xs w-4"></i> Temples
                             </Link>
                         </li>
+                        {/* ✅ Temple Partnership Link */}
+                        <li>
+                            <Link to="/temple-partnership" className="hover:text-orange-400 transition flex items-center gap-2">
+                                <i className="fas fa-handshake text-xs w-4"></i> Partner with Us
+                            </Link>
+                        </li>
                     </ul>
                 </div>
 
@@ -140,6 +146,9 @@ const Footer = () => {
                         </li>
                         <li className="flex items-center gap-2">
                             <i className="fas fa-check-circle text-green-500 text-xs w-4"></i> Cab & Hotel Booking
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <i className="fas fa-check-circle text-green-500 text-xs w-4"></i> Temple Partnership
                         </li>
                     </ul>
                     
