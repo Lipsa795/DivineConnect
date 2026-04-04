@@ -19,6 +19,10 @@ import Profile from "./pages/Profile";
 import PilgrimageTravel from "./pages/PilgrimageTravel";
 import ContactUs from "./pages/ContactUs";
 import Careers from "./pages/Careers";
+import SketchfabTemples from './pages/SketchfabTemples';
+
+
+
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuth();
@@ -48,6 +52,9 @@ function App() {
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/sketchfab-temples" element={<SketchfabTemples />} />
+
+
             
             {/* Protected Routes (require login) */}
             <Route
@@ -101,6 +108,7 @@ function App() {
           </Routes>
           <Chatbot />
           <BackgroundMusic />
+
         </div>
       </BrowserRouter>
     </AuthProvider>

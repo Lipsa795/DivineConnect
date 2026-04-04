@@ -18,13 +18,37 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // ✅ FIXED: Use API_BASE_URL
       const response = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       setToken(token);
       setUser(user);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      // Show welcome notification after login
+      setTimeout(() => {
+        if (window.showNotification) {
+          window.showNotification(
+            "🙏 Welcome to DivineConnect!",
+            `Namaste ${user.name}! May your spiritual journey be blessed.`,
+            "welcome",
+            "/"
+          );
+        }
+      }, 2000);
+      
+      // Show offer notification after 6 seconds
+      setTimeout(() => {
+        if (window.showNotification) {
+          window.showNotification(
+            "🛕 Special Pooja Offer!",
+            "Get 20% off on all pooja bookings this week. Use code: BLESSINGS20",
+            "offer",
+            "/pooja-booking"
+          );
+        }
+      }, 6000);
+      
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message };
@@ -33,13 +57,37 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (name, email, password) => {
     try {
-      // ✅ FIXED: Use API_BASE_URL
       const response = await axios.post(`${API_BASE_URL}/api/auth/signup`, { name, email, password });
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       setToken(token);
       setUser(user);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      // Show welcome notification after signup
+      setTimeout(() => {
+        if (window.showNotification) {
+          window.showNotification(
+            "🙏 Welcome to DivineConnect!",
+            `Namaste ${user.name}! Thank you for joining our spiritual community.`,
+            "welcome",
+            "/"
+          );
+        }
+      }, 2000);
+      
+      // Show offer notification after 6 seconds
+      setTimeout(() => {
+        if (window.showNotification) {
+          window.showNotification(
+            "🛕 Special Welcome Offer!",
+            "Get 20% off on your first pooja booking. Use code: WELCOME20",
+            "offer",
+            "/pooja-booking"
+          );
+        }
+      }, 6000);
+      
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message };

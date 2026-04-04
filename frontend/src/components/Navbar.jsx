@@ -69,14 +69,15 @@ function Navbar() {
 
   // Services Dropdown Items
   const servicesItems = [
-    { name: "Pooja Booking", link: "/pooja-booking", icon: "praying-hands" },
-    { name: "Charity", link: "/charity", icon: "hand-holding-heart" },
-    { name: "Samagri", link: "/samagri", icon: "shopping-bag" },
-    { name: "Prasadam", link: "/prasadam", icon: "gift" },
-    { name: "Live Darshan", link: "/live-streaming", icon: "video" },
-    { name: "Pilgrimage Travel", link: "/travel", icon: "car-side" },
-    { name: "Find Temples", link: "#TempleFinder", icon: "om", isAnchor: true }
-  ];
+  { name: "Pooja Booking", link: "/pooja-booking", icon: "praying-hands" },
+  { name: "Charity", link: "/charity", icon: "hand-holding-heart" },
+  { name: "Samagri", link: "/samagri", icon: "shopping-bag" },
+  { name: "Prasadam", link: "/prasadam", icon: "gift" },
+  { name: "Live Darshan", link: "/live-streaming", icon: "video" },
+  { name: "3D Temple Explorer", link: "/sketchfab-temples", icon: "cube" },
+  { name: "Pilgrimage Travel", link: "/travel", icon: "car-side" },
+  { name: "Find Temples", link: "#TempleFinder", icon: "om", isAnchor: true }
+];
 
   return (
     <nav className="bg-gradient-to-r from-amber-800 to-amber-600 text-white shadow-lg sticky top-0 z-50">

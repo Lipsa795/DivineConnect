@@ -73,4 +73,86 @@ router.get('/geocode', async (req, res) => {
   }
 });
 
+// ✅ NEW: Search for place photo by query
+router.get('/search-photo', async (req, res) => {
+  try {
+    const { query } = req.query;
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+    
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Google API key not configured' });
+    }
+    
+    if (!query) {
+      return res.status(400).json({ error: 'Query parameter is required' });
+    }
+    
+    // First search for the place using text search
+    const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json`;
+    const searchResponse = await axios.get(searchUrl, {
+      params: {
+        query: query,
+        key: apiKey
+      }
+    });
+    
+    if (searchResponse.data.results && searchResponse.data.results.length > 0) {
+      const place = searchResponse.data.results[0];
+      
+      // Check if the place has photos
+      if (place.photos && place.photos.length > 0) {
+        const photoReference = place.photos[0].photo_reference;
+        const photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoReference}&key=${apiKey}`;
+        
+        res.json({ 
+          success: true,
+          photoUrl: photoUrl,
+          placeName: place.name,
+          placeId: place.place_id
+        });
+      } else {
+        // No photos available for this place
+        res.json({ 
+          success: false, 
+          photoUrl: null,
+          message: 'No photos available for this place'
+        });
+      }
+    } else {
+      res.json({ 
+        success: false, 
+        photoUrl: null,
+        message: 'Place not found'
+      });
+    }
+  } catch (error) {
+    console.error('Search photo error:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to search place photo',
+      message: error.message
+    });
+  }
+});
+
+// ✅ NEW: Get photo by reference (alternative method)
+router.get('/photo', async (req, res) => {
+  try {
+    const { photoreference, maxwidth = 400 } = req.query;
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+    
+    if (!photoreference) {
+      return res.status(400).json({ error: 'Photoreference is required' });
+    }
+    
+    const photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxwidth}&photoreference=${photoreference}&key=${apiKey}`;
+    
+    // Redirect to the actual photo URL
+    res.redirect(photoUrl);
+  } catch (error) {
+    console.error('Photo API error:', error.message);
+    res.status(500).json({ error: 'Failed to fetch photo' });
+  }
+});
+
 module.exports = router;
